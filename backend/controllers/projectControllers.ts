@@ -2,13 +2,13 @@ import { Response, Request } from 'express';
 const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
 
-const Project = require('../models/projectModel');
+import ProjectModel from '../models/projectModel';
 
 //@desc Get all projects
 //@route GET /api/projects
 //@access Public
 const getProjects = asyncHandler(async (req: Request, res: Response) => {
-    const projects = await Project.find();
+    const projects = await ProjectModel.find();
     res.status(200).json(projects);
 });
 
@@ -20,7 +20,7 @@ const createProject = asyncHandler(async (req: Request, res: Response) => {
         res.status(400);
         throw new Error('Title is required');
     }
-    const project = await Project.create(req.body);
+    const project = await ProjectModel.create(req.body);
     if (!project) {
         res.status(400);
         throw new Error('Project not created');
@@ -36,7 +36,7 @@ const getProject = asyncHandler(async (req: Request, res: Response) => {
         res.status(400);
         throw new Error(`${req.params.id} is not a valid id`);
     }
-    const project = await Project.findById(req.params.id);
+    const project = await ProjectModel.findById(req.params.id);
     if (!project) {
         res.status(404);
         throw new Error('Project not found');
@@ -52,7 +52,7 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
         res.status(400);
         throw new Error(`${req.params.id} is not a valid id`);
     }
-    const project = await Project.findByIdAndDelete(req.params.id);
+    const project = await ProjectModel.findByIdAndDelete(req.params.id);
     if (!project) {
         res.status(404);
         throw new Error('Project not found');
@@ -75,9 +75,13 @@ const updateProject = asyncHandler(async (req: Request, res: Response) => {
         res.status(400);
         throw new Error(`${req.params.id} is not a valid id`);
     }
-    const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-    });
+    const project = await ProjectModel.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+            new: true,
+        }
+    );
     if (!project) {
         res.status(404);
         throw new Error('Project not found');
